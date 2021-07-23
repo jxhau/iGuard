@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    tools:context=".ContactActivity">
+
+
+    <TextView
+        android:id="@+id/textViewOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="30dp"
+        android:text="Contact Name"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewOnly2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="58dp"
+        android:text="Phone Number"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ContactID" />
+
+    <Button
+        android:id="@+id/SaveButtonID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="105dp"
+        android:saveEnabled="true"
+        android:text="Save"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PhoneNumID" />
+
+    <EditText
+        android:id="@+id/PhoneNumID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="26dp"
+        android:ems="10"
+        android:hint="Phone Number"
+        android:inputType="phone"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewOnly2" />
+
+    <EditText
+        android:id="@+id/ContactID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="26dp"
+        android:ems="10"
+        android:hint="Contact Name"
+        android:inputType="textPersonName"
+        android:saveEnabled="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewOnly" />
+
+    <Button
+        android:id="@+id/EditButtonID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="105dp"
+        android:text="Edit"
+        app:layout_constraintStart_toEndOf="@+id/SaveButtonID"
+        app:layout_constraintTop_toBottomOf="@+id/PhoneNumID" />
+
+    <TextView
+        android:id="@+id/textViewContactID"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:textColor="#FFEB3B"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="26dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewOnly" />
+
+    <TextView
+        android:id="@+id/textViewNumID"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:textColor="#FFEB3B"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="26dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewOnly2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
