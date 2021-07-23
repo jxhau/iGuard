@@ -56,9 +56,6 @@
         <activity
             android:name=".ContactActivity"
             android:parentActivityName=".MainActivity" />
-<!--        <activity-->
-<!--            android:name=".SmsActivity"-->
-<!--            android:parentActivityName=".MainActivity" />-->
 
     </application>
 
