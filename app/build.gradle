@@ -17,8 +17,21 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
+    signingConfigs {
+        config {
+            keyAlias 'iguardkey'
+            storeFile file('C:/Users/jxhau/Desktop/Huawei/iGuard/iguard.jks')
+            storePassword 'guardian'
+            keyPassword 'guardian'
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+        }
         release {
+            signingConfig signingConfigs.config
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

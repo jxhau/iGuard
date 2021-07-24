@@ -39,32 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sosBtn = findViewById(R.id.alarmBtn);
         contactBtn = findViewById(R.id.contactBtn);
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            Log.i(TAG, "sdk <= 28 Q");
-            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
-                String[] strings = {
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.SEND_SMS
-                };
-                ActivityCompat.requestPermissions(this, strings, 1);
-            }
-        } else {
-            // Dynamically apply for required permission if the API level is greater than 28
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, "android.permission.ACCESS_BACKGROUND_LOCATION") != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                String[] strings = {Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        "android.permission.ACCESS_BACKGROUND_LOCATION",
-                        Manifest.permission.SEND_SMS
-                };
-                ActivityCompat.requestPermissions(this, strings, 2);
-            }
-        }
+        checkPermission();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         checkLocationSettings();
@@ -114,6 +89,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pressedTime = System.currentTimeMillis();
     }
 
+    public void checkPermission() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            Log.i(TAG, "sdk <= 28 Q");
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+                String[] strings = {
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.SEND_SMS
+                };
+                ActivityCompat.requestPermissions(this, strings, 1);
+            }
+        } else {
+            // Dynamically apply for required permission if the API level is greater than 28
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, "android.permission.ACCESS_BACKGROUND_LOCATION") != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                String[] strings = {Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        "android.permission.ACCESS_BACKGROUND_LOCATION",
+                        Manifest.permission.SEND_SMS
+                };
+                ActivityCompat.requestPermissions(this, strings, 2);
+            }
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -140,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void checkLocationSettings() {
+    public void checkLocationSettings() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         LocationSettingsRequest locationSettingsRequest = builder.build();
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);

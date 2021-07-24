@@ -3,17 +3,21 @@ package com.jxhau.iguard;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -27,8 +31,18 @@ import com.huawei.hms.audiokit.player.manager.HwAudioManager;
 import com.huawei.hms.audiokit.player.manager.HwAudioManagerFactory;
 import com.huawei.hms.audiokit.player.manager.HwAudioPlayerConfig;
 import com.huawei.hms.audiokit.player.manager.HwAudioPlayerManager;
+import com.huawei.hms.common.ApiException;
+import com.huawei.hms.common.ResolvableApiException;
 import com.huawei.hms.location.FusedLocationProviderClient;
+import com.huawei.hms.location.LocationAvailability;
+import com.huawei.hms.location.LocationCallback;
+import com.huawei.hms.location.LocationRequest;
+import com.huawei.hms.location.LocationResult;
 import com.huawei.hms.location.LocationServices;
+import com.huawei.hms.location.LocationSettingsRequest;
+import com.huawei.hms.location.LocationSettingsResponse;
+import com.huawei.hms.location.LocationSettingsStatusCodes;
+import com.huawei.hms.location.SettingsClient;
 import com.huawei.hms.maps.CameraUpdate;
 import com.huawei.hms.maps.CameraUpdateFactory;
 import com.huawei.hms.maps.HuaweiMap;
@@ -65,6 +79,9 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     FusedLocationProviderClient fusedLocationProviderClient;
 
+    LocationRequest mLocationRequest = new LocationRequest();
+    LocationCallback mLocationCallback;
+
     // Audio
     List<HwAudioPlayItem> playItemList = new ArrayList<>();
     private HwAudioPlayerManager mHwAudioPlayerManager;
@@ -83,6 +100,10 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        //checkPermission();
+        checkLocationSettings();
+        requestLocationUpdate();
+
         // alarm
         initAudio();
 
@@ -95,24 +116,41 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
 
-        getLastLocation();
-
         mMapView.onCreate(mapViewBundle);
         mMapView.getMapAsync(this);
 
     }
 
     @Override
-    protected void onStart() { super.onStart(); }
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+        if (mapViewBundle == null) {
+            mapViewBundle = new Bundle();
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+        }
+
+        mMapView.onSaveInstanceState(mapViewBundle);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getLastLocation();
+        mMapView.onResume();
     }
 
     @Override
-    protected void onPause() { super.onPause(); }
+    protected void onPause() {
+        super.onPause();
+        mMapView.onPause();
+    }
 
     @Override
     protected void onStop() {
@@ -150,6 +188,88 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void setMyLong(double myLong) {
         this.myLong = myLong;
+    }
+
+    public void checkPermission() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            Log.i(TAG, "sdk <= 28 Q");
+            if (ContextCompat.checkSelfPermission(SosActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "Permissions granted", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // Dynamically apply for required permission if the API level is greater than 28
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_BACKGROUND_LOCATION") == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permissions granted", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void checkLocationSettings() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        LocationSettingsRequest locationSettingsRequest = builder.build();
+        mLocationRequest = new LocationRequest();
+        builder.addLocationRequest(mLocationRequest);
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+        // Check the device location settings.
+        settingsClient.checkLocationSettings(locationSettingsRequest)
+                .addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+                    @Override
+                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                        fusedLocationProviderClient
+                                .requestLocationUpdates(mLocationRequest, mLocationCallback,Looper.getMainLooper());
+                        getLastLocation();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                int statusCode = ((ApiException) e).getStatusCode();
+                switch (statusCode) {
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        try {
+                            ResolvableApiException rae = (ResolvableApiException) e;
+                            // Call startResolutionForResult to display a pop-up asking the user to enable related permission.
+                            rae.startResolutionForResult(SosActivity.this, 0);
+                        } catch (IntentSender.SendIntentException sie) {
+                        }
+                        break;
+                }
+            }
+        });
+    }
+
+    private void requestLocationUpdate() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+
+            }
+
+            @Override
+            public void onLocationAvailability(LocationAvailability locationAvailability) {
+                super.onLocationAvailability(locationAvailability);
+            }
+        };
+        fusedLocationProviderClient
+                .requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i(TAG, "request location updates success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e(TAG, "request location updates failed, error: " + e.getMessage());
+                    }
+                });
     }
 
     public void getLastLocation() {
@@ -199,6 +319,9 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(myLatLng, zoom);
 
         hMap = huaweiMap;
+
+        checkPermission();
+        checkLocationSettings();
         hMap.setMyLocationEnabled(true);
         hMap.getUiSettings().setZoomControlsEnabled(true);
         hMap.getUiSettings().setCompassEnabled(true);
