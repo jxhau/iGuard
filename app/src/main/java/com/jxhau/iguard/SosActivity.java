@@ -164,7 +164,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onStop();
         mHwAudioPlayerManager.stop();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC),0);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
     }
 
     public void setSmsNumber(String smsNumber) {
