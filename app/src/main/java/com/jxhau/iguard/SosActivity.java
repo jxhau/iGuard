@@ -86,6 +86,9 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     List<HwAudioPlayItem> playItemList = new ArrayList<>();
     private HwAudioPlayerManager mHwAudioPlayerManager;
     private HwAudioManager mHwAudioManager;
+    
+     // loud sound
+    private AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,10 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // alarm
         initAudio();
+        
+        // loud sound
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
 
         // TODO: Hide Api key
         MapsInitializer.setApiKey("CgB6e3x9ZY65/SgwlUKUZ/DJFf2ti54FoxsOas3nrNvz4fYlObSHbo36AaX4z8zzXdEEo31G+ChsYBEerwpcFFzs");
@@ -156,6 +163,8 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onStop() {
         super.onStop();
         mHwAudioPlayerManager.stop();
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC),0);
     }
 
     public void setSmsNumber(String smsNumber) {
