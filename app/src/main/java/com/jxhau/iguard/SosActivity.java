@@ -89,6 +89,9 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     
      // loud sound
     private AudioManager audioManager;
+    
+    // flash light
+    private int endFlashLight = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +168,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         mHwAudioPlayerManager.stop();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
+        offFlashLight();
     }
 
     public void setSmsNumber(String smsNumber) {
@@ -307,6 +311,9 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                         CameraPosition build = new CameraPosition.Builder().target(latLngCurrent).zoom(18).build();
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(build);
                         hMap.animateCamera(cameraUpdate);
+                        
+                        // flash light
+                        onFlashLight()
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -390,6 +397,44 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         smsManager.sendTextMessage(smsNumber, null, message, null, null);
         Toast.makeText(getApplicationContext(), "SMS sent.",
                 Toast.LENGTH_LONG).show();
+    }
+    // flash light
+    private void onFlashLight(){
+        CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+        String blinking = "0101010101";
+        long blinkDelay = 60;
+        do {
+            for (int i = 0; i < blinking.length(); i++) {
+                if (blinking.charAt(i) == '0') {
+                    try {
+                        String cameraID = cameraManager.getCameraIdList()[0];
+                        cameraManager.setTorchMode(cameraID, true);
+                    } catch (CameraAccessException e) {
+                    }
+                } else {
+                    try {
+                        String cameraID = cameraManager.getCameraIdList()[0];
+                        cameraManager.setTorchMode(cameraID, false);
+                    } catch (CameraAccessException e) {
+                    }
+                }
+                try {
+                    Thread.sleep(blinkDelay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }while(endFlashLight==0);
+    }
+    private int offFlashLight(){
+        CameraManager cameraManager =(CameraManager) getSystemService(CAMERA_SERVICE);
+        try{
+            String cameraID = cameraManager.getCameraIdList()[0];
+            cameraManager.setTorchMode(cameraID,false);
+        }catch (Exception E){
+            E.printStackTrace();
+        }
+        return endFlashLight=1;
     }
 
 }
