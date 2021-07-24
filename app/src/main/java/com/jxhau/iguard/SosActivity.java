@@ -363,6 +363,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                         mHwAudioPlayerManager = hwAudioManager.getPlayerManager();
                         mHwAudioPlayerManager.playList(getOfflinePlayItemList(), 0, 0);
                         mHwAudioPlayerManager.setPlayMode(3);
+                        mHwAudioPlayerManager.setVolume(100);
                     }
                     @Override
                     public void onError(int errorCode) { }
