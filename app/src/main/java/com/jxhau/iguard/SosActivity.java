@@ -161,8 +161,8 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         mHwAudioPlayerManager.stop();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
