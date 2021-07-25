@@ -72,7 +72,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     // variable for shared preferences.
     SharedPreferences sharedpreferences;
     String smsNumber, message, mAddress;
-    String default_message = "[iGuard] Help me! At location ";
+    String default_message = "[iGuard] Help me! Location: ";
 
     // Huawei map.
     private HuaweiMap hMap;
