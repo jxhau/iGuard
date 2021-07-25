@@ -167,6 +167,13 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         mHwAudioPlayerManager.stop();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
+        // flash light
+        CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+        try {
+            String cameraID = cameraManager.getCameraIdList()[0];
+            cameraManager.setTorchMode(cameraID, false);
+        } catch (CameraAccessException e) {
+        }
     }
 
     public void setSmsNumber(String smsNumber) {
@@ -296,6 +303,9 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                                         + location.getLongitude() + "," + location.getLatitude()
                                         + "," + location.getAccuracy());
                         initAudio();
+                        
+                        onflashLight();
+                        
                         setMyLat(location.getLatitude());
                         setMyLong(location.getLongitude());
 
@@ -395,6 +405,40 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         smsManager.sendTextMessage(smsNumber, null, message, null, null);
         Toast.makeText(getApplicationContext(), "SMS sent.",
                 Toast.LENGTH_LONG).show();
+    }
+    
+    //flash light
+    @SuppressLint("StaticFieldLeak")
+    public void onflashLight() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+                String blinking = "01010101010";
+                long blinkDelay = 50;
+                for (int i = 0; i < blinking.length(); i++) {
+                    if (blinking.charAt(i) == '0') {
+                        try {
+                            String cameraID = cameraManager.getCameraIdList()[0];
+                            cameraManager.setTorchMode(cameraID, true);
+                        } catch (CameraAccessException e) {
+                        }
+                    } else {
+                        try {
+                            String cameraID = cameraManager.getCameraIdList()[0];
+                            cameraManager.setTorchMode(cameraID, false);
+                        } catch (CameraAccessException e) {
+                        }
+                    }
+                    try {
+                        Thread.sleep(blinkDelay);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+        }.execute();
     }
 
 }
