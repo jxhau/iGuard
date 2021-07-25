@@ -20,10 +20,10 @@ android {
 
     signingConfigs {
         config {
-            keyAlias 'iguardkey'
             storeFile file('C:/Users/jxhau/Desktop/Huawei/iGuard/iguard.jks')
             storePassword 'guardian'
             keyPassword 'guardian'
+            keyAlias 'iguardkey'
         }
     }
     buildTypes {

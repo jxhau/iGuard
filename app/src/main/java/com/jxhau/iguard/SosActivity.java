@@ -107,8 +107,8 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        //checkPermission();
-        checkLocationSettings();
+        checkPermission();
+        //checkLocationSettings();
         requestLocationUpdate();
 
         // alarm
@@ -150,6 +150,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
+        checkLocationSettings();
         mMapView.onResume();
     }
 
@@ -204,12 +205,14 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
             Log.i(TAG, "sdk <= 28 Q");
             if (ContextCompat.checkSelfPermission(SosActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                checkLocationSettings();
             }
         } else {
             // Dynamically apply for required permission if the API level is greater than 28
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                     && ContextCompat.checkSelfPermission(this, "android.permission.ACCESS_BACKGROUND_LOCATION") == PackageManager.PERMISSION_GRANTED) {
+                checkLocationSettings();
             }
         }
     }
