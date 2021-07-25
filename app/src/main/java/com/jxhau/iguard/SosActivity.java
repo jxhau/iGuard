@@ -60,7 +60,8 @@ import java.util.Locale;
 
 public class SosActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "SosActivity";
-    private static final String apiKey = "CgB6e3x9ZY65/SgwlUKUZ/DJFf2ti54FoxsOas3nrNvz4fYlObSHbo36AaX4z8zzXdEEo31G+ChsYBEerwpcFFzs";
+    private static final String apiKey = "CgB6e3x9E9xVveQAzMlsqvAKdXlQBuOMecspOwBFqKXkxQNJEl7oBJsBmgBIyeIsTjx8byDeoQAUYnXmFqvkYde8";
+
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
     // creating constant keys for shared preferences.
