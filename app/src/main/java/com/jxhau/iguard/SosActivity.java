@@ -98,6 +98,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     List<HwAudioPlayItem> playItemList = new ArrayList<>();
     private HwAudioPlayerManager mHwAudioPlayerManager;
     private HwAudioManager mHwAudioManager;
+    private int endAudio=0;
 
     // Flash light
     private int endFlashLight = 0;
@@ -187,11 +188,11 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHwAudioPlayerManager.stop();
+        super.onDestroy();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
         offFlashLight();
-        fusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+        offAudio();
     }
 
     public void setSmsNumber(String smsNumber) {
@@ -392,7 +393,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     @SuppressLint("StaticFieldLeak")
     public void initAudio() {
         new AsyncTask<Void, Void, Void>() {
-            @Override
+           @Override
             protected Void doInBackground(Void... voids) {
                 // Create a configuration instance, which contains playback configurations.
                 HwAudioPlayerConfig hwAudioPlayerConfig = new HwAudioPlayerConfig(getApplicationContext());
@@ -401,12 +402,16 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                     // Return the control instance through callback.
                     @Override
                     public void onSuccess(HwAudioManager hwAudioManager) {
-                        mHwAudioManager = hwAudioManager;
-                        // Obtain the playback control instance.
-                        mHwAudioPlayerManager = hwAudioManager.getPlayerManager();
-                        mHwAudioPlayerManager.playList(getOfflinePlayItemList(), 0, 0);
-                        mHwAudioPlayerManager.setPlayMode(3);
-                        mHwAudioPlayerManager.setVolume(100);
+                        if (endAudio==0) {
+                            mHwAudioManager = hwAudioManager;
+                            // Obtain the playback control instance.
+                            mHwAudioPlayerManager = hwAudioManager.getPlayerManager();
+                            mHwAudioPlayerManager.playList(getOfflinePlayItemList(), 0, 0);
+                            mHwAudioPlayerManager.setPlayMode(3);
+                            mHwAudioPlayerManager.setVolume(100);
+                        }else{
+                            mHwAudioPlayerManager.stop();
+                        }
                     }
                     @Override
                     public void onError(int errorCode) { }
@@ -416,7 +421,11 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }.execute();
     }
-
+    
+    public int offAudio(){
+        return endAudio = 1;
+    }
+    
     public List<HwAudioPlayItem> getOfflinePlayItemList() {
         HwAudioPlayItem item = new HwAudioPlayItem();
         // Set the path of an audio file in \app\src\main\assets of an Android Studio project.
