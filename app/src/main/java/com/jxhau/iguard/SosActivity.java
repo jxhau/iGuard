@@ -135,9 +135,6 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         //checkLocationSettings();
         requestLocationUpdate();
 
-        // alarm
-        initAudio();
-
         // TODO: Hide Api key
         MapsInitializer.setApiKey(apiKey);
 
@@ -329,6 +326,8 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                                 "onLocationResult location[Longitude,Latitude,Accuracy]:"
                                         + location.getLongitude() + "," + location.getLatitude()
                                         + "," + location.getAccuracy());
+                        
+                        initAudio();
                         onflashLight();
 
                         setMyLat(location.getLatitude());
