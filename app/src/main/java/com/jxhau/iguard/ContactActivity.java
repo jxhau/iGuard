@@ -1,6 +1,7 @@
 package com.jxhau.iguard;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 public class ContactActivity extends AppCompatActivity {
-    Button SaveButtonID, EditButtonID;
+    Button SaveButtonID, EditButtonID, backBtnContact;
     TextView textViewContactID, textViewNumID;
     EditText ContactID, PhoneNumID;
 
@@ -33,6 +34,7 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
+        backBtnContact = findViewById(R.id.backBtnContact);
         SaveButtonID = findViewById(R.id.SaveButtonID);
         EditButtonID = findViewById(R.id.EditButtonID);
         textViewContactID = findViewById(R.id.textViewContactID);
@@ -66,6 +68,14 @@ public class ContactActivity extends AppCompatActivity {
             EditButtonID.setEnabled(true);
         }
 
+        backBtnContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ContactActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         // After Save Button, TextView get editText. EditText invisible and TextView visible.
         SaveButtonID.setOnClickListener(new View.OnClickListener() {

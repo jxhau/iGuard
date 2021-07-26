@@ -3,6 +3,7 @@ package com.jxhau.iguard;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,6 +21,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -98,6 +101,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
     // Flash light
     private int endFlashLight = 0;
+    Button backBtnMap;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +113,16 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         // getting data from shared prefs and storing it in our string variable.
         String phoneNumber = sharedpreferences.getString(PHONE_NUMBER, null);
         setSmsNumber(phoneNumber);
+
+        backBtnMap = findViewById(R.id.backBtnMap);
+        backBtnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SosActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         // loud sound
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -314,7 +328,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                                         + location.getLongitude() + "," + location.getLatitude()
                                         + "," + location.getAccuracy());
                         onflashLight();
-                        
+
                         setMyLat(location.getLatitude());
                         setMyLong(location.getLongitude());
 

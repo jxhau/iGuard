@@ -174,10 +174,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void openSosActivity() {
         Intent intent = new Intent(this, SosActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void openContactActivity() {
         Intent intent = new Intent(this, ContactActivity.class);
         startActivity(intent);
+        finish();
     }
 }

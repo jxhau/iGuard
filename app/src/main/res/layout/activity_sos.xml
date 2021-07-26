@@ -14,4 +14,13 @@
         map:uiZoomControls="true">
     </com.huawei.hms.maps.MapView>
 
+    <Button
+        android:id="@+id/backBtnMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/transparent"
+        android:drawableLeft="@drawable/ic_baseline_arrow_back_ios_24"
+        android:text="Back"
+        android:textColor="@color/hwRed"
+        style="?android:attr/borderlessButtonStyle"/>
 </RelativeLayout>
