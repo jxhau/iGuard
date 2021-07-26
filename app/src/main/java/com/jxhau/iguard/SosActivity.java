@@ -174,6 +174,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onResume() {
         super.onResume();
         checkLocationSettings();
+        initAudio();
         mMapView.onResume();
     }
 
