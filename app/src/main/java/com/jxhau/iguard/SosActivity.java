@@ -84,13 +84,18 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
     LocationRequest mLocationRequest = new LocationRequest();
     LocationCallback mLocationCallback;
+    
     // loud sound
     private AudioManager audioManager;
+    
     // Audio
     List<HwAudioPlayItem> playItemList = new ArrayList<>();
     private HwAudioPlayerManager mHwAudioPlayerManager;
     private HwAudioManager mHwAudioManager;
 
+    // Flash light
+    private int endFlashLight = 0;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,13 +172,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         mHwAudioPlayerManager.stop();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
-        // flash light
-        CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
-        try {
-            String cameraID = cameraManager.getCameraIdList()[0];
-            cameraManager.setTorchMode(cameraID, false);
-        } catch (CameraAccessException e) {
-        }
+        offFlashLight();
     }
 
     public void setSmsNumber(String smsNumber) {
@@ -302,8 +301,6 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                                 "onLocationResult location[Longitude,Latitude,Accuracy]:"
                                         + location.getLongitude() + "," + location.getLatitude()
                                         + "," + location.getAccuracy());
-                        initAudio();
-                        
                         onflashLight();
                         
                         setMyLat(location.getLatitude());
@@ -407,38 +404,52 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                 Toast.LENGTH_LONG).show();
     }
     
-    //flash light
+   // flash light
     @SuppressLint("StaticFieldLeak")
     public void onflashLight() {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
                 CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
-                String blinking = "01010101010";
+                String blinking = "0101";
                 long blinkDelay = 50;
-                for (int i = 0; i < blinking.length(); i++) {
-                    if (blinking.charAt(i) == '0') {
-                        try {
-                            String cameraID = cameraManager.getCameraIdList()[0];
-                            cameraManager.setTorchMode(cameraID, true);
-                        } catch (CameraAccessException e) {
+                do {
+                    for (int i = 0; i < blinking.length(); i++) {
+                        if (blinking.charAt(i) == '0') {
+                            try {
+                                String cameraID = cameraManager.getCameraIdList()[0];
+                                cameraManager.setTorchMode(cameraID, true);
+                            } catch (CameraAccessException e) {
+                            }
+                        } else {
+                            try {
+                                String cameraID = cameraManager.getCameraIdList()[0];
+                                cameraManager.setTorchMode(cameraID, false);
+                            } catch (CameraAccessException e) {
+                            }
                         }
-                    } else {
                         try {
-                            String cameraID = cameraManager.getCameraIdList()[0];
-                            cameraManager.setTorchMode(cameraID, false);
-                        } catch (CameraAccessException e) {
+                            Thread.sleep(blinkDelay);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (endFlashLight == 0){
+                            continue;
+                        }else{
+                            try {
+                                String cameraID = cameraManager.getCameraIdList()[0];
+                                cameraManager.setTorchMode(cameraID, false);
+                            } catch (CameraAccessException e) {}
+                            break;
                         }
                     }
-                    try {
-                        Thread.sleep(blinkDelay);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                }while(endFlashLight==0);
                 return null;
             }
         }.execute();
+    }
+    public int offFlashLight(){
+        return endFlashLight = 1;
     }
 
 }
