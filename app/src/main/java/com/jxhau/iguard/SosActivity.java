@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -74,6 +76,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     SharedPreferences sharedpreferences;
     String smsNumber, message, mAddress;
     String default_message = "[iGuard] Help me! Location: ";
+    Boolean sent = false;
 
     // Huawei map.
     private HuaweiMap hMap;
@@ -173,6 +176,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
         offFlashLight();
+        fusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
     }
 
     public void setSmsNumber(String smsNumber) {
@@ -185,6 +189,14 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Boolean getSent() {
+        return sent;
+    }
+
+    public void setSent(Boolean sent) {
+        this.sent = sent;
     }
 
     public String getMessage() {
@@ -323,7 +335,11 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                             }
                             setMessage(default_message + result);
                             // send SMS
-                            sendSms();
+                            if (getSent()==false){
+                                sendSms();
+                                setSent(true);
+                            }
+
                         }catch (IOException e){e.printStackTrace();}
                     }
                 })
@@ -398,10 +414,15 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         String smsNumber = getSmsNumber();
         String message = getMessage();
 
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(smsNumber, null, message, null, null);
-        Toast.makeText(getApplicationContext(), "SMS sent.",
-                Toast.LENGTH_LONG).show();
+        if (smsNumber!=null){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(smsNumber, null, message, null, null);
+            Toast.makeText(getApplicationContext(), "SMS sent.",
+                    Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(this, "Contact is null", Toast.LENGTH_SHORT).show();
+        }
+
     }
     
    // flash light

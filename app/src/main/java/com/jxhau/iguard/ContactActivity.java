@@ -33,11 +33,6 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        // Change Title Name
-        getSupportActionBar().setTitle("Contact");
-
-        // Back button beside the title  **also make change in manifests
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SaveButtonID = findViewById(R.id.SaveButtonID);
         EditButtonID = findViewById(R.id.EditButtonID);
         textViewContactID = findViewById(R.id.textViewContactID);
