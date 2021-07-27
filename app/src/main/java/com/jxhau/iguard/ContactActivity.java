@@ -108,8 +108,8 @@ public class ContactActivity extends AppCompatActivity {
                     editor.apply();
                     SaveButtonID.setEnabled(false);
                     EditButtonID.setEnabled(true);
+                    EditButtonID.setBackgroundColor(Color.parseColor("#CE0E2D"));  //red
                 }
-                EditButtonID.setBackgroundColor(Color.parseColor("#CE0E2D"));  //red
             }
         });
         // Edit Button, contents of TextView is deleted. EditText visible and TextView invisible.
@@ -129,7 +129,7 @@ public class ContactActivity extends AppCompatActivity {
                 editor.apply();
                 SaveButtonID.setEnabled(true);
                 EditButtonID.setEnabled(false);
-                EditButtonID.setBackgroundColor(Color.parseColor("#35424a"));
+                EditButtonID.setBackgroundColor(Color.parseColor("#35424a"));  // grey
             }
         });
     }
