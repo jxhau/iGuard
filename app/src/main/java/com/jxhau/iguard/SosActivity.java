@@ -352,7 +352,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                             setMessage(default_message + result);
                             // send SMS
                             if (getSent()==false){
-                                //sendSms();
+                                sendSms();
                                 setSent(true);
                             }
 
