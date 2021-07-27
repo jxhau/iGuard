@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Address;
@@ -102,28 +106,26 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
     // Flash light
     private int endFlashLight = 0;
-    Button backBtnMap;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sos);
 
+        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        actionBar.setHomeButtonEnabled(true);
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_baseline_arrow_back_24);
+        upArrow.setColorFilter(Color.parseColor("#CE0E2D"), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("");
+
         // initializing our shared preferences.
         sharedpreferences = getSharedPreferences(SHARED_PREFS, this.MODE_PRIVATE);
         // getting data from shared prefs and storing it in our string variable.
         String phoneNumber = sharedpreferences.getString(PHONE_NUMBER, null);
         setSmsNumber(phoneNumber);
-
-        backBtnMap = findViewById(R.id.backBtnMap);
-        backBtnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SosActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         // loud sound
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -134,9 +136,6 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         checkPermission();
         //checkLocationSettings();
         requestLocationUpdate();
-
-        // alarm
-        initAudio();
 
         // TODO: Hide Api key
         MapsInitializer.setApiKey(apiKey);
@@ -187,7 +186,6 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         super.onDestroy();
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
@@ -329,7 +327,9 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                                 "onLocationResult location[Longitude,Latitude,Accuracy]:"
                                         + location.getLongitude() + "," + location.getLatitude()
                                         + "," + location.getAccuracy());
+                        initAudio();
                         onflashLight();
+
 
                         setMyLat(location.getLatitude());
                         setMyLong(location.getLongitude());
@@ -352,7 +352,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
                             setMessage(default_message + result);
                             // send SMS
                             if (getSent()==false){
-                                sendSms();
+                                //sendSms();
                                 setSent(true);
                             }
 

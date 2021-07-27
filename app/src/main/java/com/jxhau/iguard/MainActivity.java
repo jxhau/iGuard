@@ -4,6 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +42,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         sosBtn = findViewById(R.id.alarmBtn);
         contactBtn = findViewById(R.id.contactBtn);
+
+        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setTitle("");
 
         checkPermission();
 
@@ -174,12 +183,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void openSosActivity() {
         Intent intent = new Intent(this, SosActivity.class);
         startActivity(intent);
-        finish();
     }
 
     public void openContactActivity() {
         Intent intent = new Intent(this, ContactActivity.class);
         startActivity(intent);
-        finish();
     }
 }

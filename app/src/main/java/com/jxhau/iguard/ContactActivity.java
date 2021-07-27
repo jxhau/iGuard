@@ -1,9 +1,12 @@
 package com.jxhau.iguard;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 public class ContactActivity extends AppCompatActivity {
-    Button SaveButtonID, EditButtonID, backBtnContact;
+    Button SaveButtonID, EditButtonID;
     TextView textViewContactID, textViewNumID;
     EditText ContactID, PhoneNumID;
 
@@ -34,7 +37,6 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        backBtnContact = findViewById(R.id.backBtnContact);
         SaveButtonID = findViewById(R.id.SaveButtonID);
         EditButtonID = findViewById(R.id.EditButtonID);
         textViewContactID = findViewById(R.id.textViewContactID);
@@ -49,6 +51,15 @@ public class ContactActivity extends AppCompatActivity {
         String contactName = sharedpreferences.getString(CONTACT_NAME, null);
         String phoneNumber = sharedpreferences.getString(PHONE_NUMBER, null);
 
+        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        actionBar.setHomeButtonEnabled(true);
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_baseline_arrow_back_24);
+        upArrow.setColorFilter(Color.parseColor("#CE0E2D"), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("");
+
         // textView show the name and number
         if (contactName == null && phoneNumber == null){
             ContactID.setVisibility(View.VISIBLE);
@@ -57,6 +68,7 @@ public class ContactActivity extends AppCompatActivity {
             textViewNumID.setVisibility(View.GONE);
             SaveButtonID.setEnabled(true);
             EditButtonID.setEnabled(false);
+            EditButtonID.setBackgroundColor(Color.parseColor("#35424a"));
         }else {
             ContactID.setVisibility(View.INVISIBLE);
             PhoneNumID.setVisibility(View.INVISIBLE);
@@ -66,16 +78,8 @@ public class ContactActivity extends AppCompatActivity {
             textViewNumID.setText(phoneNumber);
             SaveButtonID.setEnabled(false);
             EditButtonID.setEnabled(true);
+            EditButtonID.setBackgroundColor(Color.parseColor("#CE0E2D"));  //red
         }
-
-        backBtnContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ContactActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         // After Save Button, TextView get editText. EditText invisible and TextView visible.
         SaveButtonID.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +109,7 @@ public class ContactActivity extends AppCompatActivity {
                     SaveButtonID.setEnabled(false);
                     EditButtonID.setEnabled(true);
                 }
+                EditButtonID.setBackgroundColor(Color.parseColor("#CE0E2D"));  //red
             }
         });
         // Edit Button, contents of TextView is deleted. EditText visible and TextView invisible.
@@ -124,6 +129,7 @@ public class ContactActivity extends AppCompatActivity {
                 editor.apply();
                 SaveButtonID.setEnabled(true);
                 EditButtonID.setEnabled(false);
+                EditButtonID.setBackgroundColor(Color.parseColor("#35424a"));
             }
         });
     }
@@ -133,6 +139,9 @@ public class ContactActivity extends AppCompatActivity {
         return (check == PackageManager.PERMISSION_GRANTED);
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 }
