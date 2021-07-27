@@ -429,7 +429,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
     public List<HwAudioPlayItem> getOfflinePlayItemList() {
         HwAudioPlayItem item = new HwAudioPlayItem();
         // Set the path of an audio file in \app\src\main\assets of an Android Studio project.
-        item.setFilePath("hms_assets://alarm.mp3");
+        item.setFilePath("hms_assets://alarm.wav");
         playItemList.add(item);
         return playItemList;
     }
