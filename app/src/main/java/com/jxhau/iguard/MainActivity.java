@@ -34,6 +34,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private long pressedTime;
     FusedLocationProviderClient fusedLocationProviderClient;
     Button sosBtn, contactBtn;
+    
+     // check contact number available or not
+    public static final String SHARED_PREFS = "shared_prefs";
+    public static final String PHONE_NUMBER = "phone_number";
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 openContactActivity();
             }
         });
+        
+        // check contact number available or not
+        sharedpreferences = getSharedPreferences(SHARED_PREFS, this.MODE_PRIVATE);
+        // getting data from shared prefs and storing it in our string variable.
+        String phoneNumber = sharedpreferences.getString(PHONE_NUMBER, null);
+        if (phoneNumber == null){
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Reminder")
+                    .setMessage("\nContact is null. Please make sure to add an emergency contact.")
+                    .setCancelable(false)
+                    .setPositiveButton("Add now", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            openContactActivity();
+                        }
+                    }).show();
+
+        }
 
     }
 
