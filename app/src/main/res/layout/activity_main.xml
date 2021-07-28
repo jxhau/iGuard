@@ -19,7 +19,8 @@
             android:orientation="vertical">
             <ImageView
                 android:layout_width="125dp"
-                android:layout_height="125dp"/>
+                android:layout_height="125dp"
+                android:src="@mipmap/iguard_clear"/>
 
             <TextView
                 android:layout_width="wrap_content"
