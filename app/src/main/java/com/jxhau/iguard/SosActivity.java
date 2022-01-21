@@ -69,7 +69,7 @@ import java.util.Locale;
 
 public class SosActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "SosActivity";
-    private static final String apiKey = "CgB6e3x9E9xVveQAzMlsqvAKdXlQBuOMecspOwBFqKXkxQNJEl7oBJsBmgBIyeIsTjx8byDeoQAUYnXmFqvkYde8";
+    private static final String apiKey = "api_key";
 
     private static final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
