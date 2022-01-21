@@ -118,7 +118,7 @@ public class SosActivity extends AppCompatActivity implements OnMapReadyCallback
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
 
         // TODO: Hide Api key
-        MapsInitializer.setApiKey("CgB6e3x9ZY65/SgwlUKUZ/DJFf2ti54FoxsOas3nrNvz4fYlObSHbo36AaX4z8zzXdEEo31G+ChsYBEerwpcFFzs");
+        MapsInitializer.setApiKey("api_key");
 
         mMapView = findViewById(R.id.mapView);
         Bundle mapViewBundle = null;
