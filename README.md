@@ -10,3 +10,5 @@ Features:
 
 Available on Huawei AppGallery
 https://appgallery.huawei.com/#/app/C104551915
+
+Developed by: jxhau & Shueh Ting
